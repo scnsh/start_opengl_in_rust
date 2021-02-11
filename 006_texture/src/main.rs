@@ -8,6 +8,7 @@ use c_str_macro::c_str;
 use cgmath::perspective;
 use cgmath::prelude::SquareMatrix;
 use gl::types::{GLfloat, GLsizei};
+use imgui::{Window, Slider};
 use imgui::im_str;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -266,7 +267,7 @@ fn main() {
 
             // init matrice for model, view and projection
             let model_matrix = Matrix4::identity();
-            let view_matrix = Matrix4::look_at(
+            let view_matrix = Matrix4::look_at_rh(
                 Point3 {
                     x: camera_x,
                     y: camera_y,
@@ -320,10 +321,10 @@ fn main() {
             );
 
             let ui = imgui_context.frame();
-            ui.window(im_str!("Information"))
+            Window::new(im_str!("Information"))
                 .size([300.0, 300.0], imgui::Condition::FirstUseEver)
                 .position([10.0, 10.0], imgui::Condition::FirstUseEver)
-                .build(|| {
+                .build(&ui, || {
                     ui.text(im_str!("OpenGL Test App ver 1.0"));
                     ui.separator();
                     ui.text(im_str!("FPS: {:.1}", ui.io().framerate));
@@ -347,88 +348,88 @@ fn main() {
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Camera X"), &mut camera_x, -5.0, 5.0)
-                        .build();
-                    ui.slider_float(im_str!("Camera Y"), &mut camera_y, -5.0, 5.0)
-                        .build();
-                    ui.slider_float(im_str!("Camera Z"), &mut camera_z, -5.0, 5.0)
-                        .build();
+                    Slider::new(im_str!("Camera X"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_x, );
+                    Slider::new(im_str!("Camera Y"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_y);
+                    Slider::new(im_str!("Camera Z"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_z);
                 });
 
-            ui.window(im_str!("Light"))
+            Window::new(im_str!("Light"))
                 .size([300.0, 450.0], imgui::Condition::FirstUseEver)
                 .position([600.0, 10.0], imgui::Condition::FirstUseEver)
-                .build(|| {
-                    ui.slider_float(im_str!("Alpha"), &mut alpha, 0.0, 1.0)
-                        .build();
+                .build(&ui, || {
+                    Slider::new(im_str!("Alpha"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut alpha);
 
                     ui.separator();
 
-                    ui.slider_float(
-                        im_str!("Material Specular X"),
-                        &mut material_specular.x,
-                        0.0,
-                        1.0,
-                    )
-                    .build();
-                    ui.slider_float(
-                        im_str!("Material Specular Y"),
-                        &mut material_specular.y,
-                        0.0,
-                        1.0,
-                    )
-                    .build();
-                    ui.slider_float(
-                        im_str!("Material Specular Z"),
-                        &mut material_specular.z,
-                        0.0,
-                        1.0,
-                    )
-                    .build();
+                    Slider::new(im_str!("Material Specular X"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut material_specular.x);
+                    Slider::new(im_str!("Material Specular Y"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut material_specular.y);
+                    Slider::new(im_str!("Material Specular Z"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut material_specular.z);
 
-                    ui.slider_float(
-                        im_str!("Material Shininess"),
-                        &mut material_shininess,
-                        0.0,
-                        2.0,
-                    )
-                    .build();
+                    Slider::new(im_str!("Material Shininess"))
+                        .range(0.0..=2.0)
+                        .build(&ui, &mut material_shininess);
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Direction X"), &mut light_direction.x, -1.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Direction Y"), &mut light_direction.y, -1.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Direction Z"), &mut light_direction.z, -1.0, 1.0)
-                        .build();
+                    Slider::new(im_str!("Direction X"))
+                        .range(-1.0..=1.0)
+                        .build(&ui, &mut light_direction.x);
+                    Slider::new(im_str!("Direction Y"))
+                        .range(-1.0..=1.0)
+                        .build(&ui, &mut light_direction.y);
+                    Slider::new(im_str!("Direction Z"))
+                        .range(-1.0..=1.0)
+                        .build(&ui, &mut light_direction.z);
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Ambient R"), &mut ambient.x, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Ambient G"), &mut ambient.y, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Ambient B"), &mut ambient.z, 0.0, 1.0)
-                        .build();
+                    Slider::new(im_str!("Ambient R"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut ambient.x);
+                    Slider::new(im_str!("Ambient G"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut ambient.y);
+                    Slider::new(im_str!("Ambient B"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut ambient.z);
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Diffuse R"), &mut diffuse.x, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Diffuse G"), &mut diffuse.y, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Diffuse B"), &mut diffuse.z, 0.0, 1.0)
-                        .build();
+                    Slider::new(im_str!("Diffuse R"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut diffuse.x);
+                    Slider::new(im_str!("Diffuse G"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut diffuse.y);
+                    Slider::new(im_str!("Diffuse B"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut diffuse.z);
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Specular R"), &mut specular.x, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Specular G"), &mut specular.y, 0.0, 1.0)
-                        .build();
-                    ui.slider_float(im_str!("Specular B"), &mut specular.z, 0.0, 1.0)
-                        .build();
+                    Slider::new(im_str!("Specular R"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut specular.x);
+                    Slider::new(im_str!("Specular G"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut specular.y);
+                    Slider::new(im_str!("Specular B"))
+                        .range(0.0..=1.0)
+                        .build(&ui, &mut specular.z);
                 });
 
             imgui_sdl2_context.prepare_render(&ui, &window);

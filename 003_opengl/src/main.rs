@@ -114,7 +114,7 @@ fn main() {
 
             // init matrice for model, view and projection
             let model_matrix = Matrix4::identity();
-            let view_matrix = Matrix4::look_at(
+            let view_matrix = Matrix4::look_at_rh(
                 Point3 {
                     x: 0.0,
                     y: 0.0,

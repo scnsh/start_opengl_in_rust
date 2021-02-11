@@ -7,6 +7,7 @@ use c_str_macro::c_str;
 use cgmath::perspective;
 use cgmath::prelude::SquareMatrix;
 use gl::types::{GLfloat, GLsizei};
+use imgui::Window;
 use imgui::im_str;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -130,7 +131,7 @@ fn main() {
 
             // init matrice for model, view and projection
             let model_matrix = Matrix4::identity();
-            let view_matrix = Matrix4::look_at(
+            let view_matrix = Matrix4::look_at_rh(
                 Point3 {
                     x: 0.0,
                     y: 0.0,
@@ -172,9 +173,9 @@ fn main() {
             );
 
             let ui = imgui_context.frame();
-            ui.window(im_str!("Information"))
+            Window::new(im_str!("Information"))
                 .size([300.0, 200.0], imgui::Condition::FirstUseEver)
-                .build(|| {
+                .build(&ui, || {
                     ui.text(im_str!("OpenGL Test App ver 1.0"));
                     ui.separator();
                     ui.text(im_str!("FPS: {:.1}", ui.io().framerate));

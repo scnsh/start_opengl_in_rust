@@ -7,6 +7,7 @@ use c_str_macro::c_str;
 use cgmath::perspective;
 use cgmath::prelude::SquareMatrix;
 use gl::types::{GLfloat, GLsizei};
+use imgui::{Window, Slider};
 use imgui::im_str;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -213,7 +214,7 @@ fn main() {
 
             // init matrice for model, view and projection
             let model_matrix = Matrix4::identity();
-            let view_matrix = Matrix4::look_at(
+            let view_matrix = Matrix4::look_at_rh(
                 Point3 {
                     x: camera_x,
                     y: camera_y,
@@ -255,9 +256,9 @@ fn main() {
             );
 
             let ui = imgui_context.frame();
-            ui.window(im_str!("Information"))
+            Window::new(im_str!("Information"))
                 .size([300.0, 300.0], imgui::Condition::FirstUseEver)
-                .build(|| {
+                .build(&ui, || {
                     ui.text(im_str!("OpenGL Test App ver 1.0"));
                     ui.separator();
                     ui.text(im_str!("FPS: {:.1}", ui.io().framerate));
@@ -281,12 +282,15 @@ fn main() {
 
                     ui.separator();
 
-                    ui.slider_float(im_str!("Camera X"), &mut camera_x, -5.0, 5.0)
-                        .build();
-                    ui.slider_float(im_str!("Camera Y"), &mut camera_y, -5.0, 5.0)
-                        .build();
-                    ui.slider_float(im_str!("Camera Z"), &mut camera_z, -5.0, 5.0)
-                        .build();
+                    Slider::new(im_str!("Camera X"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_x);
+                    Slider::new(im_str!("Camera Y"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_y);
+                    Slider::new(im_str!("Camera Z"))
+                        .range(-5.0..=5.0)
+                        .build(&ui, &mut camera_z);
                 });
 
             imgui_sdl2_context.prepare_render(&ui, &window);

@@ -23,18 +23,19 @@ impl ImageManager {
 
         let mut image = image::open(path).expect("failed to load image");
         let format = match image {
-            image::ImageLuma8(_) => gl::RED,
-            image::ImageLumaA8(_) => gl::RG,
-            image::ImageRgb8(_) => gl::RGB,
-            image::ImageRgba8(_) => gl::RGBA,
-            image::ImageBgr8(_) => gl::RGB,
-            image::ImageBgra8(_) => gl::RGBA,
+            image::DynamicImage::ImageLuma8(_) => gl::RED,
+            image::DynamicImage::ImageLumaA8(_) => gl::RG,
+            image::DynamicImage::ImageRgb8(_) => gl::RGB,
+            image::DynamicImage::ImageRgba8(_) => gl::RGBA,
+            image::DynamicImage::ImageBgr8(_) => gl::RGB,
+            image::DynamicImage::ImageBgra8(_) => gl::RGBA,
+            _ => gl::RGBA,
         };
         if vflip {
             image = image.flipv();
         }
 
-        let data = image.raw_pixels();
+        let data = image.to_bytes();
 
         let mut texture = 0;
 
